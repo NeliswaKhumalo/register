@@ -1,6 +1,42 @@
 <?php
 
-include('config.php')
+
+require_once "config.php";
+
+
+
+if(isset($_POST['login_user']))
+{
+    $email =$_POST['email'];
+    $password =$_POST['password'];
+  
+
+  $email= strip_tags(mysqli_real_escape_string($conn,trim($email)));
+  $password= strip_tags(mysqli_real_escape_string($conn,trim($password))); 
+ 
+
+  $query= "SELECT * FROM  queries WHERE email='$email' ";
+  $query_run=mysqli_query($conn,$query);
+
+
+
+  $row = mysqli_fetch_array($query_run, MYSQLI_ASSOC);
+ 
+
+ // $password= strip_tags(mysqli_real_escape_string($conn,trim($row["Password"])));
+
+  if(password_verify($password, $row['Password']))
+  {
+    $result='<div class="alert alert-success">You are now logged in...</div>';
+  }
+  else{
+    $result='<div class="alert alert-danger">Please check your inputs</div>';
+  }
+
+
+  
+
+}
 
 ?>
 <!DOCTYPE html>

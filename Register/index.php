@@ -1,6 +1,58 @@
 <?php
 
-include('config.php')
+require_once "config.php";
+
+if(isset($_POST['signup']))
+{
+  
+     $name =$_POST['name'];
+     $surname =$_POST['surname'];
+     $email =$_POST['email'];
+     $cellphone =$_POST['cellphone'];
+     $password =$_POST['password'];
+     $cpassword =$_POST['cpassword'];
+      
+
+      $result="";
+     
+     if($password==$cpassword)
+       {
+        $email= strip_tags(mysqli_real_escape_string($conn,trim($email)));
+        $password= strip_tags(mysqli_real_escape_string($conn,trim($password)));
+
+        $query="SELECT * from  queries WHERE email='$email'";
+        $query_run=mysqli_query($conn,$query);
+       
+        if(mysqli_num_rows($query_run)>0)
+
+        {
+          // echo '<script type="text/javascript">alert("User already exist..try another email")</script>'; 
+          $result='<div class="alert alert-danger">User already exist..try another email</div>'; 
+        }
+        else
+        {
+            $hash = password_hash($password, PASSWORD_BCRYPT);
+            $query = "INSERT INTO  queries (name,surname,email,cellphone,password) values('$name' ,'$surname','$email','$cellphone','$hash')";
+            $query_run= mysqli_query($conn,$query);
+              
+
+           // echo "Thank you ,you are now registered";
+            $result='<div class="alert alert-success">Thank you ,you are now registered</div>';
+
+        }
+        
+
+
+    
+      }  
+      else
+      {
+       // echo'<script type="text/javascript">alert("Password does not match")</script>';
+        $result='<div class="alert alert-danger">Password does not match</div>'; 
+       
+      }
+    }
+
 
 ?>
 <!DOCTYPE html>
@@ -29,6 +81,7 @@ include('config.php')
                 <div class="card-body">
                     <form action="index.php" method="post">
                     <span class="result"> <?php echo $result;?></span>
+
                     
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
@@ -36,7 +89,7 @@ include('config.php')
                                     <i class="fa fa-user fa-1x "></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control py-4" name="name" placeholder="Name" required>
+                            <input type="text" class="form-control py-2" name="name" placeholder="Name" required>
                         </div>
 
                         <div class="input-group mb-3">
@@ -45,7 +98,7 @@ include('config.php')
                                     <i class="fa fa-user "></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control py-4" name="surname" placeholder="Surname" required>
+                            <input type="text" class="form-control py-2" name="surname" placeholder="Surname" required>
                         </div>
 
                         <div class="input-group mb-3">
@@ -54,7 +107,7 @@ include('config.php')
                                     <i class="fa fa-envelope "></i> 
                                 </span>
                             </div>
-                            <input type="email" class="form-control py-4" name="email" placeholder="Email address" required> 
+                            <input type="email" class="form-control py-2" name="email" placeholder="Email address" required> 
                              
                         </div>
 
@@ -64,7 +117,7 @@ include('config.php')
                                     <i class="fa fa-phone-square "></i>
                                 </span>
                             </div>
-                            <input type="tel" class="form-control py-4"  pattern="^\d{10}$" required title="10 digits required"  name="cellphone" placeholder="Phone number" required>
+                            <input type="tel" class="form-control py-2"  pattern="^\d{10}$" required title="10 digits required"  name="cellphone" placeholder="Phone number" required>
                         </div>
 
                        
@@ -76,7 +129,7 @@ include('config.php')
                                     <i class="fa fa-lock "></i>
                                 </span>
                             </div>
-                            <input type="password" class="form-control py-4" name="password" pattern=".{8,}" required title="8 characters minimum" placeholder="Password" required>
+                            <input type="password" class="form-control py-2" name="password" pattern=".{8,}" required title="8 characters minimum" placeholder="Password" required>
                             
                         </div>
                         <div class="input-group mb-3">
@@ -85,7 +138,7 @@ include('config.php')
                                     <i class="fa fa-lock "></i>
                                 </span>
                             </div>
-                            <input type="password" class="form-control py-4" name="cpassword" placeholder="Confirm Password" required>
+                            <input type="password" class="form-control py-2" name="cpassword" placeholder="Confirm Password" required>
                             
                         </div>
                        
